@@ -179,3 +179,16 @@
     margin-bottom: 0.5rem !important;
   }
 }
+
+/* The desktop paints three 400px blurred orbs behind a sticky panel. A phone
+   GPU renders those at a few frames a second, which is what made scrolling
+   into Shmack OS feel broken. Keep the colour, drop the expense. */
+@media (max-width: 768px) {
+  .desktop-stage [class*='blur-['] {
+    filter: blur(28px) !important;
+    opacity: 0.55;
+  }
+  .desktop-stage .animate-pulse {
+    animation: none !important;
+  }
+}

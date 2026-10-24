@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import gsap from 'gsap';
 import timelineData from '../../data/timeline.json';
 import {
@@ -128,6 +128,7 @@ const JourneyDesktop = () => {
   const [viewerDocId, setViewerDocId] = useState<number>(docs[0].id);
   const [started, setStarted] = useState(false);
   const [wallpaperReady, setWallpaperReady] = useState(false);
+  const [touchDevice, setTouchDevice] = useState(false);
   const [clock, setClock] = useState('');
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [theme, setTheme] = useState<Theme>('dark');
@@ -170,6 +171,11 @@ const JourneyDesktop = () => {
     const ro = new ResizeObserver(measure);
     ro.observe(el);
     return () => ro.disconnect();
+  }, []);
+
+  // decided before paint: the WebGL wallpaper must never mount on a phone
+  useLayoutEffect(() => {
+    setTouchDevice(window.matchMedia('(pointer: coarse)').matches || window.innerWidth < 768);
   }, []);
 
   useEffect(() => {
@@ -401,10 +407,10 @@ const JourneyDesktop = () => {
         onPointerDown={() => setOpenMenu(null)}
         onPointerEnter={() => document.body.classList.add('shmack-mode')}
         onPointerLeave={() => document.body.classList.remove('shmack-mode')}
-        className="desktop-stage shmack-cursors sticky top-0 z-[60] h-[calc(100dvh-58px)] min-h-[520px] w-full overflow-hidden md:h-screen md:min-h-[640px]"
+        className="desktop-stage shmack-cursors sticky top-0 z-[60] h-[100svh] min-h-[520px] w-full overflow-hidden md:h-screen md:min-h-[640px]"
       >
         {/* Default three.js wallpaper */}
-        {wallpaperReady && WALLPAPERS[wallpaperIndex].name === 'Orbit' && (
+        {wallpaperReady && !touchDevice && WALLPAPERS[wallpaperIndex].name === 'Orbit' && (
           <Suspense fallback={null}>
             <DesktopWallpaper />
           </Suspense>
