@@ -74,8 +74,9 @@ const FieldVideo = ({ src, poster, note }: { src: string; poster?: string; note:
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setLoad(true);
+          // let the still frames settle first: the clip is the last thing in
           io.disconnect();
+          window.setTimeout(() => setLoad(true), 1200);
         }
       },
       { rootMargin: '300px' },
