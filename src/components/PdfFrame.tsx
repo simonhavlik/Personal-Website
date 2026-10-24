@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useRef, useState } from 'react';
 
 const PdfMobileViewer = lazy(() => import('./PdfMobileViewer'));
 
@@ -27,10 +27,27 @@ interface PdfFrameProps {
 
 export const PdfFrame = ({ src, title, className }: PdfFrameProps) => {
   const [canEmbed, setCanEmbed] = useState<boolean | null>(null);
+  const holderRef = useRef<HTMLDivElement>(null);
+  const [near, setNear] = useState(false);
 
   useEffect(() => {
     setCanEmbed(detectEmbeddable());
   }, []);
+
+  // drawing 28 pages of canvas at page load is not free on a phone: wait
+  // until the viewer is actually approached
+  useEffect(() => {
+    if (canEmbed !== false) return;
+    const check = () => {
+      const el = holderRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight + 600 && rect.bottom > -600) setNear(true);
+    };
+    check();
+    window.addEventListener('scroll', check, { passive: true });
+    return () => window.removeEventListener('scroll', check);
+  }, [canEmbed]);
 
   // the iframe is positioned, not sized by its parent: a percentage height
   // against an auto-height box collapses to the 150px default, which is what
@@ -47,6 +64,13 @@ export const PdfFrame = ({ src, title, className }: PdfFrameProps) => {
   }
 
   if (canEmbed === false) {
+    if (!near) {
+      return (
+        <div ref={holderRef} className="absolute inset-0 flex items-center justify-center bg-gray-200">
+          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-gray-500">Document opens as you reach it</p>
+        </div>
+      );
+    }
     return (
       <Suspense
         fallback={

@@ -14,22 +14,22 @@ const Timeline = () => {
   useEffect(() => {
     if (!allowRich) return;
     const el = holderRef.current;
-    if (!el || typeof IntersectionObserver === 'undefined') {
-      setNear(true);
-      return;
-    }
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setNear(true);
-          io.disconnect();
-        }
-      },
-      { rootMargin: '900px' },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [allowRich]);
+    if (!el) return;
+
+    // a plain scroll test rather than an observer: the section is taller than
+    // the viewport, so this is deterministic and cheap
+    const check = () => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight + 900 && rect.bottom > -900) setNear(true);
+    };
+    check();
+    window.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('resize', check);
+    return () => {
+      window.removeEventListener('scroll', check);
+      window.removeEventListener('resize', check);
+    };
+  }, [allowRich, near]);
 
   if (!allowRich) return <JourneyTimeline2D />;
 

@@ -18,6 +18,7 @@ const PdfMobileViewer = ({ src, title }: PdfMobileViewerProps) => {
   const boxRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
   const [pages, setPages] = useState(0);
+  const [shown, setShown] = useState(2);
 
   useEffect(() => {
     const el = boxRef.current;
@@ -29,9 +30,16 @@ const PdfMobileViewer = ({ src, title }: PdfMobileViewerProps) => {
     return () => ro.disconnect();
   }, []);
 
+  const onScroll = () => {
+    const el = boxRef.current;
+    if (!el || shown >= pages) return;
+    if (el.scrollTop + el.clientHeight > el.scrollHeight - 900) setShown((n) => Math.min(n + 4, pages));
+  };
+
   return (
     <div
       ref={boxRef}
+      onScroll={onScroll}
       className="absolute inset-0 overflow-y-auto overscroll-contain bg-gray-200"
       aria-label={title}
     >
@@ -42,7 +50,7 @@ const PdfMobileViewer = ({ src, title }: PdfMobileViewerProps) => {
         error={<p className="p-6 text-center text-xs text-gray-500">This document could not be opened here.</p>}
       >
         {width > 0 &&
-          Array.from({ length: pages }, (_, i) => (
+          Array.from({ length: Math.min(shown, pages) }, (_, i) => (
             <div key={i} className="mb-2 flex justify-center">
               <Page
                 pageNumber={i + 1}
