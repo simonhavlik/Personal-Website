@@ -108,6 +108,21 @@ const FieldVideo = ({ src, poster, note }: { src: string; poster?: string; note:
 };
 
 const China = () => {
+  const wallRef = useRef<HTMLDivElement>(null);
+  const [wallOn, setWallOn] = useState(false);
+
+  useEffect(() => {
+    const check = () => {
+      const el = wallRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight + 800 && rect.bottom > -800) setWallOn(true);
+    };
+    check();
+    window.addEventListener('scroll', check, { passive: true });
+    return () => window.removeEventListener('scroll', check);
+  }, []);
+
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
 
@@ -204,7 +219,7 @@ const China = () => {
         </div>
 
         {/* signage, three rows, no crops and no rounded corners */}
-        <div className="mt-5">
+        <div ref={wallRef} className="mt-5">
           <div className="mb-1.5 flex items-baseline justify-between border-t border-gray-300 pt-2">
             <h3 className="font-mono text-[9px] uppercase tracking-[0.16em] text-gray-500">Signage</h3>
             <span className="font-mono text-[7px] uppercase tracking-[0.1em] text-gray-400">
@@ -234,8 +249,10 @@ const China = () => {
                         <img
                           src={item.src}
                           alt={item.note}
-                          loading="lazy"
+                          loading={wallOn ? 'eager' : 'lazy'}
                           decoding="async"
+                          width={224}
+                          height={168}
                           className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
                         />
                         <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-full bg-black/72 px-1.5 py-1 font-mono text-[6.5px] uppercase leading-tight tracking-[0.04em] text-white opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 md:text-[7.5px]">
