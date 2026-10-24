@@ -476,7 +476,7 @@ const Analyses = () => {
               </div>
               
               {/* PDF Viewer */}
-              <div className="relative flex-1 bg-gray-100 min-h-[500px] overflow-hidden">
+              <div className="relative h-[64svh] min-h-[380px] overflow-hidden bg-gray-100 lg:h-auto lg:min-h-[500px] lg:flex-1">
                 <PdfFrame
                   key={activeDoc.id}
                   src={activeDoc.pdfUrl}
