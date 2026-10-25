@@ -34,13 +34,13 @@ const Timeline = () => {
   if (!allowRich) return <JourneyTimeline2D />;
 
   return (
-    <div ref={holderRef} className="h-[100svh] min-h-[520px]">
+    <div ref={holderRef}>
       {near ? (
-        <Suspense fallback={<div className="h-full w-full bg-gray-50" />}>
+        <Suspense fallback={<div className="h-[125vh] min-h-[720px] w-full bg-gray-50" />}>
           <JourneyDesktop />
         </Suspense>
       ) : (
-        <div className="h-full w-full bg-gray-50" aria-hidden="true" />
+        <div className="h-[125vh] min-h-[720px] w-full bg-gray-50" aria-hidden="true" />
       )}
     </div>
   );

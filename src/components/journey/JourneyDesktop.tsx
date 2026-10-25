@@ -394,7 +394,7 @@ const JourneyDesktop = () => {
       ref={sectionRef}
       id="journey"
       aria-labelledby="journey-heading"
-      className="relative h-[125vh] min-h-[720px] w-full"
+      className="relative h-[100svh] min-h-[520px] w-full md:h-[125vh] md:min-h-[720px]"
       style={{ background: WALLPAPERS[wallpaperIndex].css }}
     >
       <h2 id="journey-heading" className="sr-only">
