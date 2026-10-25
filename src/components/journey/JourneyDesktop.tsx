@@ -394,7 +394,7 @@ const JourneyDesktop = () => {
       ref={sectionRef}
       id="journey"
       aria-labelledby="journey-heading"
-      className="relative h-[100svh] min-h-[520px] w-full md:h-[125vh] md:min-h-[720px]"
+      className="relative h-[125svh] min-h-[520px] w-full md:h-[125vh] md:min-h-[720px]"
       style={{ background: WALLPAPERS[wallpaperIndex].css }}
     >
       <h2 id="journey-heading" className="sr-only">
@@ -407,7 +407,7 @@ const JourneyDesktop = () => {
         onPointerDown={() => setOpenMenu(null)}
         onPointerEnter={() => document.body.classList.add('shmack-mode')}
         onPointerLeave={() => document.body.classList.remove('shmack-mode')}
-        className="desktop-stage shmack-cursors relative z-[60] h-[100svh] min-h-[520px] w-full overflow-hidden md:sticky md:top-0 md:h-screen md:min-h-[640px]"
+        className="desktop-stage shmack-cursors sticky top-0 z-[60] h-[100svh] min-h-[520px] w-full overflow-hidden md:h-screen md:min-h-[640px]"
       >
         {/* Default three.js wallpaper */}
         {wallpaperReady && !touchDevice && WALLPAPERS[wallpaperIndex].name === 'Orbit' && (
